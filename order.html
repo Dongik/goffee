@@ -4,7 +4,7 @@
 <style>
 table, td, th {    
     border: 1px solid #ddd;
-    text-align: left;
+    text-align: center;
 }
 
 table {
@@ -28,6 +28,8 @@ th, td {
     </tr>
 </table>
 
+<button onclick="doOrder()">주문</button>
+
 <script>
 var cars = [
         "아메리카노", 
@@ -39,6 +41,16 @@ var cars = [
 
 for(var i = 0;i<cars.length;i++){
        addRow(cars[i]);
+}
+
+function doOrder(){
+	var radios = document.getElementsByName('order');
+	for (var i = 0, length = radios.length; i < length; i++){
+ 		if (radios[i].checked){
+  			alert(radios[i].value);
+  			break;
+        }
+ 	}
 }
 
 function addRow(name) {
