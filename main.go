@@ -16,12 +16,12 @@ import (
     //. "github.com/Dongik/goffee/models"
 )
 type Drink struct {
-    Name    string
-    Price   int
+    Name    string  `json:"name"`
+    Price   int     `json:"price"`
 }
-type Order struct {
-    order string
-    number int
+type Request struct {
+    Order string    `json:"order"`
+    Number int      `json:"number"`
 }
 
 var ipUser map[string]string
@@ -51,34 +51,34 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func orderHandler(w http.ResponseWriter, r *http.Request) {
     defer r.Body.Close()
-    var order Order
-    if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
+    var request Request
+    if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
         respondWithError(w, http.StatusBadRequest, "Invalid request payload")
         return
     }
-    var name string
-    if number, ok := orderNum[name]; ok {
+    order := request.Order
+    if number, ok := orderNum[order]; ok {
     //do something here
-        orderNum[name] = number + 1
+        orderNum[order] = number + 1
     }else {
-        orderNum[name] = 1
+        orderNum[order] = 1
     }
     respondWithJson(w, http.StatusOK, map[string]string{"result":"success"})
 }
 
-func ordersHandler(w http.ResponseWriter, r *http.Request) {
-    var orders []Order
-    for order := range orderNum {
-        orders = append(orders, Order{
-            order: order,
-            number: orderNum[order],
-        })
-    }
-    respondWithJson(w, http.StatusOK, orders)
+func drinksHandler(w http.ResponseWriter, r *http.Request) {
+    respondWithJson(w, http.StatusOK, drinks)
 }
 
-func drinksHandler(w http.ResponseWriter, r *http.Request) {
-       respondWithJson(w, http.StatusOK, drinks)
+func resultHandler(w http.ResponseWriter, r *http.Request) {
+    var result []Request
+    for order := range orderNum{
+        result = append(result,Request{
+            Order:order,
+            Number:orderNum[order],
+        })
+    }
+    respondWithJson(w, http.StatusOK, result)
 }
 
 func loadDrinks(){
@@ -119,8 +119,9 @@ func main(){
     r.HandleFunc("/drinks", drinksHandler).Methods("GET")//get all of drinks
 
     //order
-	r.HandleFunc("/orders", orderHandler).Methods("POST")//update order
-    r.HandleFunc("/orders", ordersHandler).Methods("GET")//get all orders
+    r.HandleFunc("/results", resultHandler).Methods("GET")
+	r.HandleFunc("/orders", orderHandler).Methods("PUT")//update order
+    //r.HandleFunc("/orders", ordersHandler).Methods("GET")//get all orders
     r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 
     err := http.ListenAndServe(":8080", r)

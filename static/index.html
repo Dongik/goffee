@@ -31,39 +31,41 @@ th, td {
 <button onclick="doOrder()">주문</button>
 
 <script>
-var cars = [
-        "아메리카노", 
-    	"아메리카노 Extra", 
-    	"Good",
-        "녹차",
-        "녹차라떼"
-    ];
 
-getMenu();
-
-for(var i = 0;i<cars.length;i++){
-       addRow(cars[i]);
+//getMenu();
+function updateMenu(text){
+	var drinks = JSON.parse(text);
+	for (i = 0; i < drinks.length; i++) {
+		addRow(drinks[i].name);
+	}
 }
+url = "http://localhost:8080/"
+
+httpGetAsync(url+"drinks",updateMenu);
+//for(var i = 0;i<cars.length;i++){
+//       addRow(cars[i]);
+//}
 
 function doOrder(){
 	var radios = document.getElementsByName('order');
 	for (var i = 0, length = radios.length; i < length; i++){
  		if (radios[i].checked){
   			alert(radios[i].value);
+			var order = {};
+			order.user = "dongik";
+			order.order = radios[i].value;
+			httpPutAsync(url+"orders",order,alert);
   			break;
-        }
+        	}
  	}
 }
 
 function addRow(name) {
-
     var row = document.createElement("TR");
-    
     var nameCell = document.createElement("TD");
     var nameText = document.createTextNode(name);
     nameCell.appendChild(nameText);
     row.appendChild(nameCell);
-
 	var iceCell = document.createElement("TD");
     var iceRadio = document.createElement("INPUT");
     iceRadio.setAttribute("type", "radio");
@@ -84,20 +86,32 @@ function addRow(name) {
     menuTable.appendChild(row);
 }
 
-var xmlhttp = new XMLHttpRequest();
-var url = "dongik.site:8080"
+function httpGetAsync(theUrl, callback){
+    var xmlHttp = new XMLHttpRequest(); 
+    xmlHttp.open("GET", theUrl, true); // true for asyncnhronous
+	xmlHttp.onload = function() {
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+    	        callback(xmlHttp.responseText);        
+    	}
+	}
+    xmlHttp.send(null);
+}
 
-function getMenu(){
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "localhost:8080/drinks",true);
-    xhttp.setRequestHeader("Content-type", "application/json");
-    xhttp.send();
-    //var response = JSON.parse(xhttp.responseText);
-    alert(xhttp.responseText);
+
+function httpPutAsync(theUrl,data, callback){
+	var json = JSON.stringify(data);
+	var xhr = new XMLHttpRequest();
+	xhr.open("PUT", theUrl, true);
+	xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+	xhr.onload = function () {	
+		if (xhr.readyState == 4 && xhr.status == "200") {
+			callback(xhr.responseText);
+		}
+	}
+	xhr.send(json);
 }
 
 </script>
 
 </body>
 </html>
-

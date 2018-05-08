@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<p>Result</p>
+<table id = "table">
+    <tr>
+        <th>Order</th>
+        <th>number</th>
+    <tr>
+</table>
+<button>back to order page</button>
+<script>
+var url = "http://localhost:8080/"
+httpGetAsync(url+"results",renderResult);
+ function httpGetAsync(theUrl, callback){
+    var xmlHttp = new XMLHttpRequest(); 
+     xmlHttp.open("GET", theUrl, true); // true for asyncnhronous
+     xmlHttp.onload = function() {
+         if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+                 callback(xmlHttp.responseText);        
+         }
+     }
+     xmlHttp.send(null);
+ }
+function renderResult(text){
+    var results = JSON.parse(text);
+    for(i = 0; i < results.length; i++) {
+        addRow(results[i].order,results[i].number);
+    }
+}
+function addRow(order,num){
+    var row = document.createElement("TR");
+    var c0 = document.createElement("TD");
+    var c0Text = document.createTextNode(order);
+    c0.appendChild(c0Text);
+    row.appendChild(c0);
+    var c1 = document.createElement("TD");
+    var c1Text = document.createTextNode(num);
+    c1.appendChild(c1Text);
+    row.appendChild(c1);
+    var menuTable = document.getElementById("table")
+    menuTable.appendChild(row);    
+}
+</script>
+</body>
+</html>
