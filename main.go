@@ -15,13 +15,14 @@ import (
 
     //. "github.com/Dongik/goffee/models"
 )
+
 type Drink struct {
-    Name    string  `json:"name"`
-    Price   int     `json:"price"`
+    Name string `json: "name"`
+    Price int   `json: "price"`
 }
 type Request struct {
-    Order string    `json:"order"`
-    Number int      `json:"number"`
+    Order string `json:"order"`
+    Number int `json:"number"`
 }
 
 var ipUser map[string]string

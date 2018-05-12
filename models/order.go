@@ -1,6 +1,6 @@
 package models
 
 type Order struct {
-    order string
-    number int
+    Order string `json:"order"`
+    Number int   `json:"number"`
 }

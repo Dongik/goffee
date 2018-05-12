@@ -33,7 +33,7 @@ th, td {
 <script>
 
 //getMenu();
-function updateMenu(text){
+function renderMenu(text){
 	var drinks = JSON.parse(text);
 	for (i = 0; i < drinks.length; i++) {
 		addRow(drinks[i].name);
@@ -41,7 +41,7 @@ function updateMenu(text){
 }
 url = "http://dongik.site:8080/"
 
-httpGetAsync(url+"drinks",updateMenu);
+httpGetAsync(url+"drinks",renderMenu);
 //for(var i = 0;i<cars.length;i++){
 //       addRow(cars[i]);
 //}

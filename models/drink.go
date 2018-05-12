@@ -1,6 +1,7 @@
 package models
 
+
 type Drink struct {
-    name    string  `json: "name"`
-    price   int     `json: "price"`
+    Name    string  `json: "name"`
+    Price   int     `json: "price"`
 }
