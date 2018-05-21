@@ -12,7 +12,7 @@ import (
     "os"
     "log"
     "strconv"
-
+    "strings"
     //. "github.com/Dongik/goffee/models"
 )
 
@@ -97,12 +97,14 @@ func loadDrinks(){
             log.Fatal(err)
         }
         name := line[0]
-        price, _ := strconv.Atoi(line[1])
-        if err != nil { fmt.Print(err)}
+        price, perr := strconv.Atoi(strings.Trim(line[1]," "))
+        if perr != nil { fmt.Printf(perr.Error())}
+        if err != nil { fmt.Printf(err.Error())}
         drinks = append(drinks, Drink{
             Name: name,
             Price: price,
             })
+    //   fmt.Println("%s, %d",name,price)
     }
 }
 
