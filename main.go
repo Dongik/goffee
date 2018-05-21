@@ -17,13 +17,21 @@ import (
 )
 
 type Drink struct {
-    Name string `json: "name"`
-    Price int   `json: "price"`
+    Name    string  `json:"name"`
+    Price   int     `json:"price"`
 }
 type Request struct {
     Order string `json:"order"`
     Number int `json:"number"`
 }
+
+type Order struct {
+    Name string `json:"name"`
+    Type string `json:"type"`
+    Size string `json:"size"`
+    Number int  `json:"number"`
+}
+
 
 var ipUser map[string]string
 var orderNum map[string]int
@@ -52,23 +60,27 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func orderHandler(w http.ResponseWriter, r *http.Request) {
     defer r.Body.Close()
-    var request Request
-    if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+    var order Order
+    if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
+        fmt.Println("Invalid payload")
         respondWithError(w, http.StatusBadRequest, "Invalid request payload")
         return
     }
-    order := request.Order
-    if number, ok := orderNum[order]; ok {
+    fmt.Println("goood! ",order)
+    orderText := order.Size+order.Name+order.Type
+
+    if number, ok := orderNum[orderText]; ok {
     //do something here
-        orderNum[order] = number + 1
+        orderNum[orderText] = number + 1
     }else {
-        orderNum[order] = 1
+        orderNum[orderText] = 1
     }
     respondWithJson(w, http.StatusOK, map[string]string{"result":"success"})
 }
 
 func drinksHandler(w http.ResponseWriter, r *http.Request) {
-    respondWithJson(w, http.StatusOK, drinks)
+    //respondWithJson(w, http.StatusOK, drinks)
+    json.NewEncoder(w).Encode(drinks)
 }
 
 func resultHandler(w http.ResponseWriter, r *http.Request) {
@@ -123,7 +135,7 @@ func main(){
 
     //order
     r.HandleFunc("/results", resultHandler).Methods("GET")
-	r.HandleFunc("/orders", orderHandler).Methods("PUT")//update order
+	r.HandleFunc("/orders", orderHandler).Methods("POST")//update order
     //r.HandleFunc("/orders", ordersHandler).Methods("GET")//get all orders
     r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 

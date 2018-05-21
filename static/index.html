@@ -52,9 +52,11 @@ function doOrder(){
  		if (radios[i].checked){
   			alert(radios[i].value);
 			var order = {};
-			order.user = "dongik";
-			order.order = radios[i].value;
-			httpPutAsync(url+"orders",order,alert);
+			order.clientId = "dongik";
+			order.name = radios[i].value;
+            order.type = "Hot"
+            order.size = ""
+			httpPostAsync(url+"orders",order,alert);
   			break;
         	}
  	}
@@ -98,10 +100,10 @@ function httpGetAsync(theUrl, callback){
 }
 
 
-function httpPutAsync(theUrl,data, callback){
+function httpPostAsync(theUrl,data, callback){
 	var json = JSON.stringify(data);
 	var xhr = new XMLHttpRequest();
-	xhr.open("PUT", theUrl, true);
+	xhr.open("POST", theUrl, true);
 	xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
 	xhr.onload = function () {	
 		if (xhr.readyState == 4 && xhr.status == "200") {
